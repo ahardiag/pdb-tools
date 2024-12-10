@@ -16,7 +16,7 @@
 # limitations under the License.
 
 """
-Reorder the atoms following the first occurrence name order of the residue name in the PDB file.
+Reorder atoms based on the first occurrence of residue atom names in the PDB file.
 
 Residues names are matched *without* taking into consideration spaces.
 
