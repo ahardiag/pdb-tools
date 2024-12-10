@@ -37,7 +37,6 @@ effort to maintain and compile. RIP.
 
 import os
 import sys
-from itertools import tee
 
 __author__ = ["Joao Rodrigues", "Joao M.C. Teixeira"]
 __email__ = ["j.p.g.l.m.rodrigues@gmail.com", "joaomcteixeira@gmail.com"]
