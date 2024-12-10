@@ -484,6 +484,19 @@ Example:
 </div>
 <div style="margin-bottom: 1em;">
 <details>
+<summary><b>pdb_reordername</b><p>Reorder atoms based on the first occurrence of residue atom names in the PDB file.</p></summary>
+<span style="font-family: monospace; white-space: pre;">
+Usage:
+    python pdb_reordername.py -&lt;resname&gt; &lt;pdb file&gt;
+
+Example:
+    python pdb_reordername.py -ALA 1CTF.pdb  # reorder atoms 
+                                             # in ALA residues
+</span>
+</details>
+</div>
+<div style="margin-bottom: 1em;">
+<details>
 <summary><b>pdb_reres</b><p>Renumbers the residues of the PDB file starting from a given number (default 1).</p></summary>
 <span style="font-family: monospace; white-space: pre;">
 Usage:
