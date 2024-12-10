@@ -135,6 +135,8 @@ def run(fhandle, resname_set):
 
     ref_atom_order = {}
     residue_lines = {}
+    not_residues_lines = []
+    buffer_line = None  # To hold the line when the atom names repeat
 
     # Parse the reference atom order and yield non-record lines
     for line in fhandle:
@@ -146,14 +148,27 @@ def run(fhandle, resname_set):
                     ref_atom_order[resname] = []
                 if atom_name not in ref_atom_order[resname]:
                     ref_atom_order[resname].append(atom_name)
+                    yield line
                 else:
                     # Stop after parsing the first residue and move to reordering
+                    buffer_line = line
                     break
         else:
             # Yield non-coordinate lines (e.g., CRYST1, REMARK)
             yield line
 
-    # Continue processing the file from the current state of fhandle
+    # Continue processing from the line after the break
+    if buffer_line:
+        # Process the line where the break occurred
+        if buffer_line.startswith(records):
+            resname = buffer_line[17:20].strip()
+            resid = buffer_line[22:26].strip()
+            if resname in resname_set:
+                if resid not in residue_lines:
+                    residue_lines[resid] = []
+                residue_lines[resid].append(buffer_line)
+
+    # Continue reading from fhandle without converting to a list
     for line in fhandle:
         if line.startswith(records):
             resname = line[17:20].strip()
@@ -163,11 +178,11 @@ def run(fhandle, resname_set):
                     residue_lines[resid] = []
                 residue_lines[resid].append(line)
             else:
-                # Yield lines not matching resname_set
-                yield line
+                # Collect lines not matching resname_set
+                not_residues_lines.append(line)
         else:
-            # Stop after parsing all coordinates
-            break
+            # Collect remaining non-coordinate lines
+            not_residues_lines.append(line)
 
     # Reorder and yield the grouped residue lines
     for resid, lines in residue_lines.items():
@@ -185,8 +200,8 @@ def run(fhandle, resname_set):
             for line in lines:
                 yield line
 
-    # Yield any remaining non-coordinate lines
-    for line in fhandle:
+    # Yield any collected non-residues lines
+    for line in not_residues_lines:
         yield line
 
 
